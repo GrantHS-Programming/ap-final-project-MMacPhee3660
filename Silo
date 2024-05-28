@@ -1,0 +1,11 @@
+bubble = Actor('bubble', (275, 230))
+window = Actor('window', (0,0))
+x = Actor('x', (32,32))
+
+        if star.distance_to(heart) < 40:
+            bubble.draw()
+        if click == 1:
+            window.draw()
+            x.draw()
+
+    if mouse_pos_x >= 223 and mouse_pos_x <= 287 and mouse_pos_y <= 198 and mouse_pos_y >= 262 and button ==
