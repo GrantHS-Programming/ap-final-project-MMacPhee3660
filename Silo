@@ -9,3 +9,12 @@ x = Actor('x', (32,32))
             x.draw()
 
     if mouse_pos_x >= 223 and mouse_pos_x <= 287 and mouse_pos_y <= 198 and mouse_pos_y >= 262 and button ==
+
+
+
+
+
+     if key == key.I and inventory == 1:
+        inventory = 0
+        click = 0
+        print("close")

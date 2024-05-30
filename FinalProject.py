@@ -13,17 +13,35 @@ bubble_hit.center = bubble.center
 
 window = Actor('window', (150, 150))
 
+inv = Actor('inv', (100, 100))
+
+flower = Actor('flower', (100, 100))
+flower_hit = Rect((0, 0), (5, 5))
+flower_hit.center = flower.center
+
+Flower = Actor('big flower', (100, 250))
+Flower_hit = Rect((0, 0), (32, 32))
+Flower_hit.center = Flower.center
+
+circle = Actor('circle', (155, 160))
+circle_hit = Rect((0, 0), (5, 5))
+circle_hit.center = circle.center
 
 x = Actor('x', (100, 100))
-x_hit = Rect((0, 0), (32,32))
+x_hit = Rect((0, 0), (32, 32))
 x_hit.center = x.center
 
 background = 1
 click = 0
+speech = 0
+show_flower = 1
+inventory = 0
+pause = 0
+flower_inv = 0
 
 
 def draw():
-    global background
+    global background, inventory
     screen.fill((255, 255, 255))
 
     if background == 1:
@@ -33,22 +51,30 @@ def draw():
             background = 2
             star.top = 0
         if star.distance_to(heart) < 40:
-            if click != 1:
+            if speech != 1:
                 bubble.draw()
-        if click == 1:
+        if speech == 1:
             window.draw()
             x.draw()
 
     if background == 2:
         screen.blit("test background 2", (150, 150))
+        if show_flower == 1:
+            Flower.draw()
         if star.bottom < 0:
             background = 1
             star.bottom = WIDTH
+
+    if inventory == 1:
+        inv.draw()
+        if flower_inv:
+            flower.draw()
+
     star.draw()
 
 
-
 def update():
+    global click, pause
     if click != 1:
         if keyboard.w or keyboard.up:
             star.y -= 1
@@ -58,25 +84,36 @@ def update():
             star.x -= 1
         if keyboard.d or keyboard.right:
             star.x += 1
+    if click == 1:
+        pause = pause + 1
 
 
 def on_mouse_down(pos):
-    global click
+    global click, speech, show_flower, flower_inv
     if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1:
         click = 1
+        speech = 1
     if x_hit.collidepoint(pos[0], pos[1]) and background == 1:
         click = 0
+        speech = 0
+    if Flower_hit.collidepoint(pos[0], pos[1]) and background == 2:
+        show_flower = 0
+        flower_inv = 1
 
 
 def on_mouse_up():
     global click
 
 
-
-
-
-
-
+def on_key_down(key):
+    global inventory, click, pause
+    if key == key.I and inventory == 0:
+        inventory = 1
+        click = 1
+        pause = 0
+    if key == key.I and inventory == 1 and pause > 1:
+        inventory = 0
+        click = 0
 
 
 pgzrun.go()
