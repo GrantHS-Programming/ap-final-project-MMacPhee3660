@@ -18,3 +18,7 @@ x = Actor('x', (32,32))
         inventory = 0
         click = 0
         print("close")
+
+
+
+x_hit.collidepoint(pos[0], pos[1]) and background == 1

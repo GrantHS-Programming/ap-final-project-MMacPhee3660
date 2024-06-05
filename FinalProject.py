@@ -1,7 +1,7 @@
 import pgzrun
 
-WIDTH = 300
-HEIGHT = 300
+WIDTH = 500
+HEIGHT = 500
 
 star = Actor('star', (150, 150))
 star_hit = Rect((0, 0), (32, 32))
@@ -38,9 +38,12 @@ giving = Actor('give window', (150, 150))
 flower_name = Actor('flower name', (150, 150))
 
 y = Actor('y', (150, 150))
-y_hit = Rect((0,0), (5,10))
+y_hit = Rect((0, 0), (5, 10))
+y_hit.center = y.center
 
 n = Actor('n', (150, 150))
+n_hit = Rect((0, 0), (5, 10))
+n_hit.center = n.center
 
 background = 1
 click = 0
@@ -51,24 +54,25 @@ pause = 0
 flower_inv = 0
 ask = 0
 ask_flower = 0
+flower_given = 0
 
 
 def draw():
-    global background, inventory, pause
+    global background, inventory
     screen.clear()
     screen.fill((255, 255, 255))
+
     if background == 1:
-        screen.blit("test background 1", (150, 150))
+        screen.blit("test background 1", (0, 0))
         heart.draw()
         if star.top > WIDTH:
             background = 2
             star.top = 0
         if star.distance_to(heart) < 40:
-            if speech != 1:
+            if speech == 0 or ask == 0:
                 bubble.draw()
         if speech == 1:
             window.draw()
-            x.draw()
         if ask == 1:
             giving.draw()
             y.draw()
@@ -76,9 +80,8 @@ def draw():
             if ask_flower == 1:
                 flower_name.draw()
 
-
     if background == 2:
-        screen.blit("test background 2", (150, 150))
+        screen.blit("test background 2", (0, 0))
         if show_flower == 1:
             Flower.draw()
         if star.bottom < 0:
@@ -94,7 +97,7 @@ def draw():
 
 
 def update():
-    global click, pause, show_flower, flower_inv, ask, ask_flower
+    global click, pause, show_flower, flower_inv, ask_flower
     star_hit.center = star.center
     if click != 1:
         if keyboard.w or keyboard.up:
@@ -108,18 +111,28 @@ def update():
         if Flower_hit.colliderect(star_hit) and background == 2:
             show_flower = 0
             flower_inv = 1
-            ask = 1
             ask_flower = 1
     if click == 1:
         pause = pause + 1
 
 
 def on_mouse_down(pos):
-    global click, speech
-    if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1:
+    global click, speech, ask_flower, ask, flower_given, flower_inv, pause
+    if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1 and star.distance_to(heart) < 40 and ask_flower == 0:
         click = 1
         speech = 1
-    if x_hit.collidepoint(pos[0], pos[1]) and background == 1:
+        pause = 0
+    if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1 and star.distance_to(heart) < 40 and ask_flower == 1:
+        click = 1
+        ask = 1
+        pause = 0
+    if y_hit.collidepoint(pos[0], pos[1]) and background == 1 and ask == 1:
+        flower_given = 1
+        ask = 0
+        speech = 0
+        click = 0
+        flower_inv = 0
+    if click == 1 and pause > 0:
         click = 0
         speech = 0
 
