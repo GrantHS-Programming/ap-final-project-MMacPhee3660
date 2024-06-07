@@ -37,13 +37,17 @@ giving = Actor('give window', (150, 150))
 
 flower_name = Actor('flower name', (150, 150))
 
-y = Actor('y', (150, 150))
+y = Actor('y', (145, 160))
 y_hit = Rect((0, 0), (5, 10))
 y_hit.center = y.center
 
-n = Actor('n', (150, 150))
+n = Actor('n', (155, 160))
 n_hit = Rect((0, 0), (5, 10))
 n_hit.center = n.center
+
+north = Actor('travel north', (150, 0))
+north.top = HEIGHT
+
 
 background = 1
 click = 0
@@ -55,6 +59,8 @@ flower_inv = 0
 ask = 0
 ask_flower = 0
 flower_given = 0
+heart_hello = 1
+heart_hello2 = 0
 
 
 def draw():
@@ -93,6 +99,7 @@ def draw():
         if flower_inv:
             flower.draw()
 
+    north.draw()
     star.draw()
 
 
@@ -101,13 +108,13 @@ def update():
     star_hit.center = star.center
     if click != 1:
         if keyboard.w or keyboard.up:
-            star.y -= 1
+            star.y -= 2
         if keyboard.s or keyboard.down:
-            star.y += 1
+            star.y += 2
         if keyboard.a or keyboard.left:
-            star.x -= 1
+            star.x -= 2
         if keyboard.d or keyboard.right:
-            star.x += 1
+            star.x += 2
         if Flower_hit.colliderect(star_hit) and background == 2:
             show_flower = 0
             flower_inv = 1
@@ -117,8 +124,8 @@ def update():
 
 
 def on_mouse_down(pos):
-    global click, speech, ask_flower, ask, flower_given, flower_inv, pause
-    if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1 and star.distance_to(heart) < 40 and ask_flower == 0:
+    global click, speech, ask_flower, ask, flower_given, flower_inv, pause, heart_hello, heart_hello2
+    if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1 and star.distance_to(heart) < 40:
         click = 1
         speech = 1
         pause = 0
@@ -126,19 +133,32 @@ def on_mouse_down(pos):
         click = 1
         ask = 1
         pause = 0
+    if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1 and star.distance_to(heart) < 40 and heart_hello == 1:
+        click = 1
+        speech = 1
+        pause = 0
+        heart_hello = 0
+        heart_hello2 = 1
+        print("Oh hello there!")
+    if background == 1 and heart_hello2 == 1 and pause > 0:
+        click = 1
+        speech = 1
+        pause = 0
+        heart_hello2 = 0
+        print("Could you help me find a flower?")
     if y_hit.collidepoint(pos[0], pos[1]) and background == 1 and ask == 1:
         flower_given = 1
         ask = 0
         speech = 0
         click = 0
         flower_inv = 0
-    if click == 1 and pause > 0:
+    if n_hit.collidepoint(pos[0], pos[1]) and background == 1 and ask == 1:
+        speech = 0
+        ask = 0
+        click = 0
+    if click == 1 and pause > 0 and heart_hello2 == 0 and heart_hello == 0:
         click = 0
         speech = 0
-
-
-def on_mouse_up():
-    global click
 
 
 def on_key_down(key):
