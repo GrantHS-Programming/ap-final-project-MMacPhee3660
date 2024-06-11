@@ -1,15 +1,18 @@
 import pgzrun
+from pgzhelper import *
 
 WIDTH = 500
 HEIGHT = 500
 
-star = Actor('star', (150, 150))
+star = Actor('star', (250, 375))
 star_hit = Rect((0, 0), (32, 32))
 star_hit.center = star.center
 
-heart = Actor('heart', (250, 250))
+heart = Actor('heart', (375, 375))
 
-bubble = Actor('bubble', (255, 230))
+bubble = Actor('bubble', (0, 0))
+bubble.bottom = heart.top
+bubble.left = heart.left
 bubble_hit = Rect((0, 0), (32, 32))
 bubble_hit.center = bubble.center
 
@@ -45,9 +48,22 @@ n = Actor('n', (155, 160))
 n_hit = Rect((0, 0), (5, 10))
 n_hit.center = n.center
 
-north = Actor('travel north', (150, 0))
-north.top = HEIGHT
+north = Actor('travel north', (250, 250))
+north.scale = 5.21
+north_hit = Rect((0, 0), (41, 83))
+north_hit.center = north.center
 
+east = Actor('travel east', (250, 250))
+east.scale = 5.21
+
+south = Actor('travel south', (250, 250))
+south.scale = 5.21
+
+west = Actor('travel west', (250, 250))
+west.scale = 5.21
+
+background1 = Actor('background 1', (250, 250))
+background1.scale = 5.21
 
 background = 1
 click = 0
@@ -61,6 +77,8 @@ ask_flower = 0
 flower_given = 0
 heart_hello = 1
 heart_hello2 = 0
+north_click = 0
+south.click = 0
 
 
 def draw():
@@ -69,7 +87,8 @@ def draw():
     screen.fill((255, 255, 255))
 
     if background == 1:
-        screen.blit("test background 1", (0, 0))
+        screen.clear()
+        background1.draw()
         heart.draw()
         if star.top > WIDTH:
             background = 2
@@ -79,7 +98,7 @@ def draw():
                 bubble.draw()
         if speech == 1:
             window.draw()
-        if ask == 1:
+        if ask == 1 and heart_hello == 0:
             giving.draw()
             y.draw()
             n.draw()
@@ -100,6 +119,9 @@ def draw():
             flower.draw()
 
     north.draw()
+    east.draw()
+    south.draw()
+    west.draw()
     star.draw()
 
 
@@ -107,7 +129,7 @@ def update():
     global click, pause, show_flower, flower_inv, ask_flower
     star_hit.center = star.center
     if click != 1:
-        if keyboard.w or keyboard.up:
+        if (keyboard.w or keyboard.up): #and star.top > 275:
             star.y -= 2
         if keyboard.s or keyboard.down:
             star.y += 2
@@ -129,6 +151,7 @@ def on_mouse_down(pos):
         click = 1
         speech = 1
         pause = 0
+        print("Did you find a flower for me?")
     if bubble_hit.collidepoint(pos[0], pos[1]) and background == 1 and star.distance_to(heart) < 40 and ask_flower == 1:
         click = 1
         ask = 1
