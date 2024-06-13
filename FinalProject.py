@@ -58,6 +58,9 @@ east.scale = 5.21
 
 south = Actor('travel south', (250, 250))
 south.scale = 5.21
+south.scale = 5.21
+south_hit = Rect((0, 0), (41, 83))
+south_hit.center = north.center
 
 west = Actor('travel west', (250, 250))
 west.scale = 5.21
@@ -78,7 +81,7 @@ flower_given = 0
 heart_hello = 1
 heart_hello2 = 0
 north_click = 0
-south.click = 0
+south_click = 0
 
 
 def draw():
